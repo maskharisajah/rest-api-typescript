@@ -16,7 +16,19 @@ export default defineConfig([
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
+        project: ["**/tsconfig.json"]
       },
+    },
+     ignores: [
+      "**/build/*",
+      "**/node_modules/*",
+      "**/public/*",
+      "**/tsconfig.json",
+    ],
+
+    rules: {
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
     },
   },
   tseslint.configs.recommended,
