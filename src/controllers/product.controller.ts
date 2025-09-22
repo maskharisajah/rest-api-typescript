@@ -1,6 +1,14 @@
 import { Request, Response } from 'express';
 import { createProductValidation } from '../validations/product.validation';
 import { logger } from '../utils/logger';
+import { getProductFromDB } from '../services/product.service';
+
+interface ProductType {
+  product_id: string;
+  name: string;
+  price: number;
+  category: string;
+}
 
 export const createProduct = (req: Request, res: Response) => {
   const { error, value } = createProductValidation(req.body);
@@ -22,18 +30,14 @@ export const createProduct = (req: Request, res: Response) => {
   });
 };
 
-export const getProduct = (req: Request, res: Response) => {
-  const Products = [
-    { name: 'Sepatu Super', price: 50000 },
-    { name: 'Baju Super', price: 25000 },
-    { name: 'Celana Super', price: 15000 }
-  ];
+export const getProduct = async (req: Request, res: Response) => {
+  const Products: any = await getProductFromDB();
   const {
     params: { name }
   } = req;
 
   if (name) {
-    const filterProduct = Products.filter((product) => product.name === name);
+    const filterProduct = Products.filter((product: ProductType) => product.name === name);
 
     if (filterProduct.length === 0) {
       logger.info('Product not found');
