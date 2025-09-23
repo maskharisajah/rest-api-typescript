@@ -1,7 +1,13 @@
 import { Request, Response } from 'express';
 import { createProductValidation, updateProductValidation } from '../validations/product.validation';
 import { logger } from '../utils/logger';
-import { addProductToDB, getProductById, getProductFromDB, updateProductById } from '../services/product.service';
+import {
+  addProductToDB,
+  deleteProductById,
+  getProductById,
+  getProductFromDB,
+  updateProductById
+} from '../services/product.service';
 import { v4 as uuidv4 } from 'uuid';
 
 export const createProduct = async (req: Request, res: Response) => {
@@ -98,6 +104,39 @@ export const updateProduct = async (req: Request, res: Response) => {
       status: false,
       statusCode: 404,
       message: error instanceof Error ? error.message : error
+    });
+  }
+};
+
+export const deleteProduct = async (req: Request, res: Response) => {
+  const {
+    params: { id }
+  } = req;
+
+  try {
+    const result = await deleteProductById(id as string);
+
+    if (result) {
+      logger.info(`Delete product success `);
+      return res.status(200).send({
+        status: true,
+        statusCode: 200,
+        message: 'Product deleted successfully'
+      });
+    } else {
+      logger.info(`Product not found`);
+      return res.status(404).send({
+        status: false,
+        statusCode: 404,
+        message: 'Product not found'
+      });
+    }
+  } catch (error) {
+    logger.error(`Err: product - delete = ${error}`);
+    return res.status(422).send({
+      status: false,
+      statusCode: 422,
+      message: error
     });
   }
 };

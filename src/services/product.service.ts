@@ -36,3 +36,9 @@ export const updateProductById = async (id: String, payload: ProductType) => {
     { $set: payload }
   );
 };
+
+export const deleteProductById = async (id: String) => {
+  const result = await productModel.findOneAndDelete({ product_id: id });
+  console.log(result);
+  return result;
+};
