@@ -75,7 +75,7 @@ export const updateProduct = async (req: Request, res: Response) => {
 
   const { error, value } = updateProductValidation(req.body);
   if (error) {
-    logger.error(`Err: product - create = ${error?.details[0]?.message}`);
+    logger.error(`Err: product - update = ${error?.details[0]?.message}`);
     return res.status(422).send({
       status: false,
       statusCode: 422,
@@ -92,5 +92,12 @@ export const updateProduct = async (req: Request, res: Response) => {
       message: 'Product updated successfully',
       data: value
     });
-  } catch (error) {}
+  } catch (error) {
+    logger.error(`Err: product - update = ${error instanceof Error ? error.message : error}`);
+    return res.status(404).send({
+      status: false,
+      statusCode: 404,
+      message: error instanceof Error ? error.message : error
+    });
+  }
 };
