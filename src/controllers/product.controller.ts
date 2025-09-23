@@ -90,20 +90,30 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 
   try {
-    await updateProductById(id as string, value);
-    logger.info(`Update product success = ${JSON.stringify(value)}`);
-    return res.status(200).send({
-      status: true,
-      statusCode: 200,
-      message: 'Product updated successfully',
-      data: value
-    });
+    const result = await updateProductById(id as string, value);
+
+    if (result) {
+      logger.info(`Update product success = ${JSON.stringify(value)}`);
+      return res.status(200).send({
+        status: true,
+        statusCode: 200,
+        message: 'Product updated successfully',
+        data: value
+      });
+    } else {
+      logger.info(`Product not found`);
+      return res.status(404).send({
+        status: false,
+        statusCode: 404,
+        message: 'Product not found'
+      });
+    }
   } catch (error) {
-    logger.error(`Err: product - update = ${error instanceof Error ? error.message : error}`);
-    return res.status(404).send({
+    logger.error(`Err: product - update = ${error}`);
+    return res.status(422).send({
       status: false,
-      statusCode: 404,
-      message: error instanceof Error ? error.message : error
+      statusCode: 422,
+      message: error
     });
   }
 };

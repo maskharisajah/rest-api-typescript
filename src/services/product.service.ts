@@ -23,18 +23,13 @@ export const getProductById = async (id: string) => {
 };
 
 export const updateProductById = async (id: String, payload: ProductType) => {
-  const productExists = await productModel.countDocuments({ product_id: id });
-
-  if (productExists !== 1) {
-    throw new Error('Product not found');
-  }
-
-  return await productModel.findOneAndUpdate(
+  const result = await productModel.findOneAndUpdate(
     {
       product_id: id
     },
     { $set: payload }
   );
+  return result;
 };
 
 export const deleteProductById = async (id: String) => {
